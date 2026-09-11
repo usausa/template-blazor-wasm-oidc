@@ -85,6 +85,7 @@ public sealed class AuthTests : IClassFixture<TestApplicationFactory>
         // Assert
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
+
     [Fact]
     public async Task DataApiSortsByRequestedColumn()
     {
