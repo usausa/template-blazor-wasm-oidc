@@ -487,13 +487,15 @@ public static class ApplicationExtensions
     // Startup
     //--------------------------------------------------------------------------------
 
-    public static void InitializeApplication(this WebApplication app)
+    public static ValueTask InitializeApplicationAsync(this WebApplication app)
     {
         // Prepare instrument
         app.Services.GetRequiredService<ApplicationInstrument>();
 
         // Prepare database
         app.Services.GetRequiredService<DataService>().CreateTable();
+
+        return ValueTask.CompletedTask;
     }
 
     //--------------------------------------------------------------------------------

@@ -68,7 +68,7 @@ app.UseLoggingContext();
 app.MapEndpoints();
 
 // Initialize
-app.InitializeApplication();
+await app.InitializeApplicationAsync();
 
 // Run
 await app.RunAsync();
