@@ -1,0 +1,15 @@
+<Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+            <NotAuthorized>
+                <RedirectToLogin />
+            </NotAuthorized>
+            <Authorizing>
+                <div class="boot">
+                    <div class="boot-title">TEMPLATE</div>
+                    <div class="boot-note">Authorizing...</div>
+                </div>
+            </Authorizing>
+        </AuthorizeRouteView>
+    </Found>
+</Router>

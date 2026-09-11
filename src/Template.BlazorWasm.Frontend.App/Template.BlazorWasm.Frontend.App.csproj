@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <CodeAnalysisRuleSet>..\..\Analyzers.ruleset</CodeAnalysisRuleSet>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+  </PropertyGroup>
+
+  <!-- 配信サイズ方針(明文化):
+       - 圧縮(br/gz)は発行時に自動生成され、ホスト側の静的ファイル配信がそのまま利用する
+       - InvariantGlobalization / InvariantTimezone は日本語業務(全角照合・タイムゾーン表示)では不採用
+       - RunAOTCompilation は起動高速化と引き換えにダウンロードサイズとビルド時間が増えるため既定OFF(必要時にopt-in) -->
+  <PropertyGroup>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <InvariantTimezone>false</InvariantTimezone>
+    <!-- <RunAOTCompilation>true</RunAOTCompilation> -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="10.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.11" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.14.4" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.14.4" />
+    <PackageReference Include="NSwag.MSBuild" Version="14.7.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Template.BlazorWasm.Contracts\Template.BlazorWasm.Contracts.csproj" />
+    <ProjectReference Include="..\Template.BlazorWasm.Domain\Template.BlazorWasm.Domain.csproj" />
+  </ItemGroup>
+
+  <!-- Backend.Hostのビルドでopenapiドキュメントが更新されたらAPIクライアントを再生成する -->
+  <!-- ドキュメントはBackend.Hostのobj配下(ソース管理対象外)に出力されるため、未生成のクローン直後は再生成をスキップする -->
+  <PropertyGroup>
+    <OpenApiDocumentPath>..\Template.BlazorWasm.Backend.Host\obj\v1.json</OpenApiDocumentPath>
+  </PropertyGroup>
+
+  <Target Name="GenerateApiClient"
+          BeforeTargets="BeforeCompile"
+          Condition="Exists('$(OpenApiDocumentPath)')"
+          Inputs="$(OpenApiDocumentPath);nswag.json"
+          Outputs="Services\ApiClient.g.cs">
+    <Exec Command="$(NSwagExe_Net100) run nswag.json" WorkingDirectory="$(ProjectDir)" />
+
+    <!-- 初回生成時(グロブ評価後)でも同一ビルドでコンパイル対象に含める -->
+    <ItemGroup>
+      <Compile Remove="Services\ApiClient.g.cs" />
+      <Compile Include="Services\ApiClient.g.cs" />
+    </ItemGroup>
+  </Target>
+
+</Project>

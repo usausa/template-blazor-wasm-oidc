@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>テンプレート</title>
+    <base href="/" />
+
+    <!-- ランタイムダウンロード中にIdPホストへの接続(DNS+TCP+TLS)を先行確立する。IdP変更時はホストを更新すること -->
+    <link rel="preconnect" href="http://localhost:8180" crossorigin />
+
+    <link href="_content/Microsoft.FluentUI.AspNetCore.Components/css/reboot.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+</head>
+
+<body>
+    <!-- ランタイムのダウンロード完了までインラインスプラッシュを表示する(省略すると数秒間白画面になる) -->
+    <div id="app">
+        <div class="boot">
+            <div class="boot-title">TEMPLATE</div>
+            <div class="boot-bar"><span></span></div>
+            <div class="boot-note">Loading application</div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui" data-nosnippet>
+        予期せぬエラーが発生しました。
+        <a href="." class="reload">再読み込み</a>
+        <span class="dismiss">🗙</span>
+    </div>
+
+    <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+
+</html>

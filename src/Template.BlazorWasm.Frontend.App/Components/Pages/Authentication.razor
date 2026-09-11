@@ -1,0 +1,49 @@
+@page "/authentication/{action}"
+
+<PageTitle>認証 - テンプレート</PageTitle>
+
+@* 認証遷移中はスプラッシュと同デザインの表示を再掲する *@
+<RemoteAuthenticatorView Action="@Action">
+    <LoggingIn>
+        <div class="boot">
+            <div class="boot-title">TEMPLATE</div>
+            <div class="boot-note">Redirecting to login...</div>
+        </div>
+    </LoggingIn>
+    <CompletingLoggingIn>
+        <div class="boot">
+            <div class="boot-title">TEMPLATE</div>
+            <div class="boot-note">Completing login...</div>
+        </div>
+    </CompletingLoggingIn>
+    <LogOut>
+        <div class="boot">
+            <div class="boot-title">TEMPLATE</div>
+            <div class="boot-note">Processing logout...</div>
+        </div>
+    </LogOut>
+    <CompletingLogOut>
+        <div class="boot">
+            <div class="boot-title">TEMPLATE</div>
+            <div class="boot-note">Completing logout...</div>
+        </div>
+    </CompletingLogOut>
+    <LogOutSucceeded>
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+            <FluentLabel Typo="Typography.H4">ログアウトしました</FluentLabel>
+            <FluentAnchor Href="/" Appearance="Appearance.Hypertext">ホームへ戻る</FluentAnchor>
+        </FluentStack>
+    </LogOutSucceeded>
+    <LogInFailed Context="errorMessage">
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+            <FluentMessageBar Title="ログインに失敗しました" Intent="MessageIntent.Error" AllowDismiss="false">@errorMessage</FluentMessageBar>
+            <FluentAnchor Href="/" Appearance="Appearance.Hypertext">ホームへ戻る</FluentAnchor>
+        </FluentStack>
+    </LogInFailed>
+    <LogOutFailed Context="errorMessage">
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+            <FluentMessageBar Title="ログアウトに失敗しました" Intent="MessageIntent.Error" AllowDismiss="false">@errorMessage</FluentMessageBar>
+            <FluentAnchor Href="/" Appearance="Appearance.Hypertext">ホームへ戻る</FluentAnchor>
+        </FluentStack>
+    </LogOutFailed>
+</RemoteAuthenticatorView>

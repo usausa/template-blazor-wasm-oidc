@@ -1,0 +1,17 @@
+@implements IDialogContentComponent<Template.BlazorWasm.Frontend.App.Models.DataEditForm>
+
+<FluentDialogHeader ShowDismiss="true">
+    <FluentLabel Typo="Typography.PaneHeader">@Dialog.Instance.Parameters.Title</FluentLabel>
+</FluentDialogHeader>
+
+<FluentDialogBody>
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+        <FluentTextField @bind-Value="Content.Name" Label="名前" Maxlength="@Length.Name" Style="width: 100%;" />
+        <FluentNumberField @bind-Value="Content.Value" Label="値" Min="0" Max="999999999" Style="width: 100%;" />
+    </FluentStack>
+</FluentDialogBody>
+
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" OnClick="OnSaveClickAsync">保存</FluentButton>
+    <FluentButton Appearance="Appearance.Neutral" OnClick="OnCancelClickAsync">キャンセル</FluentButton>
+</FluentDialogFooter>

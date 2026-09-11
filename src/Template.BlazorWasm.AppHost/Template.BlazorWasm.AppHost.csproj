@@ -1,0 +1,15 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.5.3">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <CodeAnalysisRuleSet>..\..\Analyzers.ruleset</CodeAnalysisRuleSet>
+    <AspireUseCliBundle>true</AspireUseCliBundle>
+    <UserSecretsId>7c2f89a1-30de-46e5-8d10-64e2b4a5c7f3</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Template.BlazorWasm.Backend.Host\Template.BlazorWasm.Backend.Host.csproj" />
+  </ItemGroup>
+
+</Project>

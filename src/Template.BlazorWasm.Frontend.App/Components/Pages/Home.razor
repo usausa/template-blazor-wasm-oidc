@@ -1,0 +1,22 @@
+@page "/"
+@attribute [Authorize]
+
+<PageTitle>ホーム - テンプレート</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+    <FluentLabel Typo="Typography.H4">ホーム</FluentLabel>
+    <FluentCard>
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="8">
+            <FluentLabel Typo="Typography.H6">一覧画面</FluentLabel>
+            <FluentAnchor Href="data" Appearance="Appearance.Hypertext">データ一覧(検索/CRUD)</FluentAnchor>
+        </FluentStack>
+    </FluentCard>
+    <FluentCard>
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="8">
+            <FluentLabel Typo="Typography.H6">その他</FluentLabel>
+            <FluentAnchor Href="/swagger" Target="_blank" Appearance="Appearance.Hypertext">Swagger UI</FluentAnchor>
+            <FluentAnchor Href="/redoc" Target="_blank" Appearance="Appearance.Hypertext">ReDoc</FluentAnchor>
+            <FluentAnchor Href="/health" Target="_blank" Appearance="Appearance.Hypertext">Health check</FluentAnchor>
+        </FluentStack>
+    </FluentCard>
+</FluentStack>
