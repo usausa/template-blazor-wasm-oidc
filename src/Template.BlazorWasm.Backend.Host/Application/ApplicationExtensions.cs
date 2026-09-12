@@ -406,7 +406,7 @@ public static class ApplicationExtensions
         // Cache
         builder.Services.AddMemoryCache();
 
-        // Service & Usecase
+        // Service
         builder.Services.AddCoreServices();
 
         // Setting

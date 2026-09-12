@@ -43,6 +43,5 @@ global using Template.BlazorWasm.Domain;
 global using Template.BlazorWasm.Models;
 global using Template.BlazorWasm.Models.Entity;
 global using Template.BlazorWasm.Services;
-global using Template.BlazorWasm.Usecase;
 global using Template.BlazorWasm.Backend.Host.Application;
 global using Template.BlazorWasm.Backend.Host.Settings;
