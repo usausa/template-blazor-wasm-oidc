@@ -6,8 +6,8 @@
 
 <FluentDialogBody>
     <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
-        <FluentTextField @bind-Value="Content.Name" Label="名前" Maxlength="@Length.Name" Style="width: 100%;" />
-        <FluentNumberField @bind-Value="Content.Value" Label="値" Min="0" Max="999999999" Style="width: 100%;" />
+        <FluentTextField @bind-Value="Content.Name" Label="名前" Maxlength="@Length.Name" Class="full-width" />
+        <FluentNumberField @bind-Value="Content.Value" Label="値" Min="0" Max="999999999" Class="full-width" />
     </FluentStack>
 </FluentDialogBody>
 
