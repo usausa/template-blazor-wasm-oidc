@@ -212,8 +212,13 @@ public static class ApplicationExtensions
 
     public static WebApplication UseErrorHandler(this WebApplication app)
     {
-        // API: ProblemDetails
+        // ProblemDetails
         app.UseExceptionHandler();
+
+        // Status code page
+        app.UseWhen(
+            static context => context.Request.Path.StartsWithSegments(ApiPathPrefix, StringComparison.OrdinalIgnoreCase),
+            static b => b.UseStatusCodePages());
 
         return app;
     }
