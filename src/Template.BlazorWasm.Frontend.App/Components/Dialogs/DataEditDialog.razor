@@ -1,4 +1,4 @@
-@implements IDialogContentComponent<Template.BlazorWasm.Frontend.App.Models.DataEditForm>
+@implements IDialogContentComponent<DataResponse?>
 
 <FluentDialogHeader ShowDismiss="true">
     <FluentLabel Typo="Typography.PaneHeader">@Dialog.Instance.Parameters.Title</FluentLabel>
@@ -9,12 +9,12 @@
         <DataAnnotationsValidator />
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
             <div class="full-width">
-                <FluentTextField @bind-Value="Content.Name" Label="名前" Maxlength="@Length.Name" Class="full-width" />
-                <FluentValidationMessage For="() => Content.Name" />
+                <FluentTextField @bind-Value="model.Name" Label="名前" Maxlength="@Length.Name" Class="full-width" />
+                <FluentValidationMessage For="() => model.Name" />
             </div>
             <div class="full-width">
-                <FluentNumberField @bind-Value="Content.Value" Label="値" Min="0" Max="999999999" Class="full-width" />
-                <FluentValidationMessage For="() => Content.Value" />
+                <FluentNumberField @bind-Value="model.Value" Label="値" Min="0" Max="999999999" Class="full-width" />
+                <FluentValidationMessage For="() => model.Value" />
             </div>
             @foreach (var message in editContext.GetValidationMessages(modelField))
             {

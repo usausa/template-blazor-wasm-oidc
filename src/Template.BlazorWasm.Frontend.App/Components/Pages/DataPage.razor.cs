@@ -3,7 +3,6 @@ namespace Template.BlazorWasm.Frontend.App.Components.Pages;
 using Microsoft.FluentUI.AspNetCore.Components;
 
 using Template.BlazorWasm.Frontend.App.Components.Dialogs;
-using Template.BlazorWasm.Frontend.App.Models;
 
 public partial class DataPage
 {
@@ -66,27 +65,20 @@ public partial class DataPage
     // Create / Edit
     //--------------------------------------------------------------------------------
 
-    private Task OnCreateClickAsync() =>
-        ShowEditDialogAsync("データ作成", new DataEditForm());
-
-    private Task OnEditClickAsync(DataResponse entry) =>
-        ShowEditDialogAsync("データ編集", new DataEditForm { Id = entry.Id, Name = entry.Name, Value = entry.Value });
-
-    // The dialog saves and reports the result itself. Refresh unless it was cancelled.
-    private async Task ShowEditDialogAsync(string title, DataEditForm form)
+    private async Task OnCreateClickAsync()
     {
-        var dialog = await DialogService.ShowDialogAsync<DataEditDialog>(form, new DialogParameters
+        if (await DialogService.ShowEditDialogAsync("データ作成", null))
         {
-            Title = title,
-            PreventDismissOnOverlayClick = true
-        });
-        var result = await dialog.Result;
-        if (result.Cancelled)
-        {
-            return;
+            await grid.RefreshDataAsync();
         }
+    }
 
-        await grid.RefreshDataAsync();
+    private async Task OnEditClickAsync(DataResponse entry)
+    {
+        if (await DialogService.ShowEditDialogAsync("データ編集", entry))
+        {
+            await grid.RefreshDataAsync();
+        }
     }
 
     //--------------------------------------------------------------------------------

@@ -1,11 +1,10 @@
 namespace Template.BlazorWasm.Frontend.App.Components.Dialogs;
 
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.FluentUI.AspNetCore.Components;
-
-using Template.BlazorWasm.Frontend.App.Models;
 
 // Saves inside the dialog so that errors from the API (validation, duplicate name) are shown on the
 // fields and the user can correct the input without reopening the dialog.
@@ -17,10 +16,12 @@ public partial class DataEditDialog
 
     private FieldIdentifier modelField;
 
+    private DataEditForm model = default!;
+
     private bool saving;
 
     [Parameter]
-    public DataEditForm Content { get; set; } = default!;
+    public DataResponse? Content { get; set; }
 
     [CascadingParameter]
     public FluentDialog Dialog { get; set; } = default!;
@@ -33,9 +34,10 @@ public partial class DataEditDialog
 
     protected override void OnInitialized()
     {
-        editContext = new EditContext(Content);
+        model = Content is null ? new DataEditForm() : new DataEditForm { Name = Content.Name, Value = Content.Value };
+        editContext = new EditContext(model);
         messageStore = new ValidationMessageStore(editContext);
-        modelField = new FieldIdentifier(Content, string.Empty);
+        modelField = new FieldIdentifier(model, string.Empty);
     }
 
     private async Task OnSaveClickAsync()
@@ -49,14 +51,14 @@ public partial class DataEditDialog
         saving = true;
         try
         {
-            if (Content.Id is null)
+            if (Content is null)
             {
-                await ApiClient.CreateDataAsync(new DataCreateRequest(Content.Name, Content.Value));
+                await ApiClient.CreateDataAsync(new DataCreateRequest(model.Name, model.Value));
                 ToastService.ShowSuccess("データを作成しました");
             }
             else
             {
-                await ApiClient.UpdateDataAsync(Content.Id.Value, new DataUpdateRequest(Content.Name, Content.Value));
+                await ApiClient.UpdateDataAsync(Content.Id, new DataUpdateRequest(model.Name, model.Value));
                 ToastService.ShowSuccess("データを更新しました");
             }
 
@@ -68,7 +70,7 @@ public partial class DataEditDialog
         }
         catch (ApiException ex) when (ex.StatusCode == 409)
         {
-            messageStore.Add(() => Content.Name, "同じ名前のデータが存在します。");
+            messageStore.Add(() => model.Name, "同じ名前のデータが存在します。");
             editContext.NotifyValidationStateChanged();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -96,10 +98,25 @@ public partial class DataEditDialog
         foreach (var (field, messages) in errors)
         {
             var property = typeof(DataEditForm).GetProperty(field, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-            var identifier = property is null ? modelField : new FieldIdentifier(Content, property.Name);
+            var identifier = property is null ? modelField : new FieldIdentifier(model, property.Name);
             messageStore.Add(identifier, messages);
         }
 
         editContext.NotifyValidationStateChanged();
+    }
+
+    //--------------------------------------------------------------------------------
+    // Form
+    //--------------------------------------------------------------------------------
+
+    // Same rules as the Backend contracts. The dialog validates these before calling the API.
+    internal sealed class DataEditForm
+    {
+        [Required(ErrorMessage = "名前を入力してください。")]
+        [MaxLength(Length.Name, ErrorMessage = "名前は{1}文字以内で入力してください。")]
+        public string Name { get; set; } = string.Empty;
+
+        [Range(0, 999_999_999, ErrorMessage = "値は{1}から{2}の範囲で入力してください。")]
+        public int Value { get; set; }
     }
 }
