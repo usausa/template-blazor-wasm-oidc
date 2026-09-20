@@ -5,13 +5,26 @@
 </FluentDialogHeader>
 
 <FluentDialogBody>
-    <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
-        <FluentTextField @bind-Value="Content.Name" Label="名前" Maxlength="@Length.Name" Class="full-width" />
-        <FluentNumberField @bind-Value="Content.Value" Label="値" Min="0" Max="999999999" Class="full-width" />
-    </FluentStack>
+    <EditForm EditContext="editContext">
+        <DataAnnotationsValidator />
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+            <div class="full-width">
+                <FluentTextField @bind-Value="Content.Name" Label="名前" Maxlength="@Length.Name" Class="full-width" />
+                <FluentValidationMessage For="() => Content.Name" />
+            </div>
+            <div class="full-width">
+                <FluentNumberField @bind-Value="Content.Value" Label="値" Min="0" Max="999999999" Class="full-width" />
+                <FluentValidationMessage For="() => Content.Value" />
+            </div>
+            @foreach (var message in editContext.GetValidationMessages(modelField))
+            {
+                <FluentLabel Color="Color.Error">@message</FluentLabel>
+            }
+        </FluentStack>
+    </EditForm>
 </FluentDialogBody>
 
 <FluentDialogFooter>
-    <FluentButton Appearance="Appearance.Accent" OnClick="OnSaveClickAsync">保存</FluentButton>
+    <FluentButton Appearance="Appearance.Accent" Loading="saving" OnClick="OnSaveClickAsync">保存</FluentButton>
     <FluentButton Appearance="Appearance.Neutral" OnClick="OnCancelClickAsync">キャンセル</FluentButton>
 </FluentDialogFooter>

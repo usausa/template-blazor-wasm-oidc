@@ -63,15 +63,21 @@ public partial class DataPage
     }
 
     //--------------------------------------------------------------------------------
-    // Create
+    // Create / Edit
     //--------------------------------------------------------------------------------
 
-    private async Task OnCreateClickAsync()
+    private Task OnCreateClickAsync() =>
+        ShowEditDialogAsync("データ作成", new DataEditForm());
+
+    private Task OnEditClickAsync(DataResponse entry) =>
+        ShowEditDialogAsync("データ編集", new DataEditForm { Id = entry.Id, Name = entry.Name, Value = entry.Value });
+
+    // The dialog saves and reports the result itself. Refresh unless it was cancelled.
+    private async Task ShowEditDialogAsync(string title, DataEditForm form)
     {
-        var form = new DataEditForm();
         var dialog = await DialogService.ShowDialogAsync<DataEditDialog>(form, new DialogParameters
         {
-            Title = "データ作成",
+            Title = title,
             PreventDismissOnOverlayClick = true
         });
         var result = await dialog.Result;
@@ -80,65 +86,7 @@ public partial class DataPage
             return;
         }
 
-        try
-        {
-            await ApiClient.CreateDataAsync(new DataCreateRequest(form.Name, form.Value));
-
-            ToastService.ShowSuccess("データを作成しました");
-            await grid.RefreshDataAsync();
-        }
-        catch (ApiException ex) when (ex.StatusCode == 409)
-        {
-            ToastService.ShowError("同じ名前のデータが存在します");
-        }
-        catch (AccessTokenNotAvailableException ex)
-        {
-            ex.Redirect();
-        }
-    }
-
-    //--------------------------------------------------------------------------------
-    // Edit
-    //--------------------------------------------------------------------------------
-
-    private async Task OnEditClickAsync(DataResponse entry)
-    {
-        var form = new DataEditForm
-        {
-            Name = entry.Name,
-            Value = entry.Value
-        };
-        var dialog = await DialogService.ShowDialogAsync<DataEditDialog>(form, new DialogParameters
-        {
-            Title = "データ編集",
-            PreventDismissOnOverlayClick = true
-        });
-        var result = await dialog.Result;
-        if (result.Cancelled)
-        {
-            return;
-        }
-
-        try
-        {
-            await ApiClient.UpdateDataAsync(entry.Id, new DataUpdateRequest(form.Name, form.Value));
-
-            ToastService.ShowSuccess("データを更新しました");
-            await grid.RefreshDataAsync();
-        }
-        catch (ApiException ex) when (ex.StatusCode == 409)
-        {
-            ToastService.ShowError("同じ名前のデータが存在します");
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            ToastService.ShowError("対象が存在しません");
-            await grid.RefreshDataAsync();
-        }
-        catch (AccessTokenNotAvailableException ex)
-        {
-            ex.Redirect();
-        }
+        await grid.RefreshDataAsync();
     }
 
     //--------------------------------------------------------------------------------

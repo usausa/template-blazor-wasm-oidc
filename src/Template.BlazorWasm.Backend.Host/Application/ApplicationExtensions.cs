@@ -38,6 +38,7 @@ using Template.BlazorWasm.Backend.Host.Infrastructure.Authentication;
 using Template.BlazorWasm.Backend.Host.Infrastructure.ExceptionHandling;
 using Template.BlazorWasm.Backend.Host.Infrastructure.HealthChecks;
 using Template.BlazorWasm.Backend.Host.Infrastructure.Logging;
+using Template.BlazorWasm.Backend.Host.Infrastructure.Security;
 
 public static class ApplicationExtensions
 {
@@ -188,19 +189,7 @@ public static class ApplicationExtensions
         }
 
         // Headers
-        app.Use(static (context, next) =>
-        {
-            context.Response.OnStarting(static state =>
-            {
-                var headers = ((HttpContext)state).Response.Headers;
-                headers.XContentTypeOptions = "nosniff";
-                headers.XFrameOptions = "DENY";
-                headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
-                return Task.CompletedTask;
-            }, context);
-
-            return next(context);
-        });
+        app.UseMiddleware<SecurityHeadersMiddleware>();
 
         return app;
     }
@@ -508,6 +497,8 @@ public static class ApplicationExtensions
         builder.Services.AddSingleton(static p => p.GetRequiredService<IOptions<LogSetting>>().Value);
         builder.Services.AddOptions<CompressionSetting>().BindConfiguration("Compression").ValidateDataAnnotations().ValidateOnStart();
         builder.Services.AddSingleton(static p => p.GetRequiredService<IOptions<CompressionSetting>>().Value);
+        builder.Services.AddOptions<CspSetting>().BindConfiguration("Csp").ValidateDataAnnotations().ValidateOnStart();
+        builder.Services.AddSingleton(static p => p.GetRequiredService<IOptions<CspSetting>>().Value);
         builder.Services.AddOptions<AuthSetting>().BindConfiguration("Auth").ValidateDataAnnotations().ValidateOnStart();
         builder.Services.AddSingleton(static p => p.GetRequiredService<IOptions<AuthSetting>>().Value);
         builder.Services.AddOptions<TelemetrySetting>().BindConfiguration("Telemetry").ValidateDataAnnotations().ValidateOnStart();

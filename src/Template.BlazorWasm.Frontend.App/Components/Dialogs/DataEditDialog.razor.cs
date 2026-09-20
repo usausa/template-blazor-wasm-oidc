@@ -1,20 +1,105 @@
 namespace Template.BlazorWasm.Frontend.App.Components.Dialogs;
 
+using System.Reflection;
+
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.FluentUI.AspNetCore.Components;
 
 using Template.BlazorWasm.Frontend.App.Models;
 
+// Saves inside the dialog so that errors from the API (validation, duplicate name) are shown on the
+// fields and the user can correct the input without reopening the dialog.
 public partial class DataEditDialog
 {
+    private EditContext editContext = default!;
+
+    private ValidationMessageStore messageStore = default!;
+
+    private FieldIdentifier modelField;
+
+    private bool saving;
+
     [Parameter]
     public DataEditForm Content { get; set; } = default!;
 
     [CascadingParameter]
     public FluentDialog Dialog { get; set; } = default!;
 
-    private Task OnSaveClickAsync() =>
-        String.IsNullOrWhiteSpace(Content.Name) ? Task.CompletedTask : Dialog.CloseAsync(Content);
+    [Inject]
+    public required ApiClient ApiClient { get; set; }
+
+    [Inject]
+    public required IToastService ToastService { get; set; }
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(Content);
+        messageStore = new ValidationMessageStore(editContext);
+        modelField = new FieldIdentifier(Content, string.Empty);
+    }
+
+    private async Task OnSaveClickAsync()
+    {
+        messageStore.Clear();
+        if (!editContext.Validate())
+        {
+            return;
+        }
+
+        saving = true;
+        try
+        {
+            if (Content.Id is null)
+            {
+                await ApiClient.CreateDataAsync(new DataCreateRequest(Content.Name, Content.Value));
+                ToastService.ShowSuccess("データを作成しました");
+            }
+            else
+            {
+                await ApiClient.UpdateDataAsync(Content.Id.Value, new DataUpdateRequest(Content.Name, Content.Value));
+                ToastService.ShowSuccess("データを更新しました");
+            }
+
+            await Dialog.CloseAsync();
+        }
+        catch (ApiException ex) when (ex.StatusCode == 400)
+        {
+            AddServerErrors(ValidationProblem.ParseErrors(ex.Response));
+        }
+        catch (ApiException ex) when (ex.StatusCode == 409)
+        {
+            messageStore.Add(() => Content.Name, "同じ名前のデータが存在します。");
+            editContext.NotifyValidationStateChanged();
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            // The entry was deleted meanwhile. Close so that the caller refreshes the list.
+            ToastService.ShowError("対象が存在しません");
+            await Dialog.CloseAsync();
+        }
+        catch (AccessTokenNotAvailableException ex)
+        {
+            ex.Redirect();
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
 
     private Task OnCancelClickAsync() =>
         Dialog.CancelAsync();
+
+    // Field names come back in camelCase; unknown ones are shown at the model level
+    private void AddServerErrors(IReadOnlyDictionary<string, string[]> errors)
+    {
+        foreach (var (field, messages) in errors)
+        {
+            var property = typeof(DataEditForm).GetProperty(field, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+            var identifier = property is null ? modelField : new FieldIdentifier(Content, property.Name);
+            messageStore.Add(identifier, messages);
+        }
+
+        editContext.NotifyValidationStateChanged();
+    }
 }
