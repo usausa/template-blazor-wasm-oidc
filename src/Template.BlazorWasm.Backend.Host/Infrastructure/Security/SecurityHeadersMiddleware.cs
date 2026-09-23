@@ -1,30 +1,17 @@
 namespace Template.BlazorWasm.Backend.Host.Infrastructure.Security;
 
-using Template.BlazorWasm.Backend.Host.Settings;
-
-// Security headers for every response. The CSP is enforced, or only reported (Csp:ReportOnly, Development)
 public sealed class SecurityHeadersMiddleware
 {
     private readonly RequestDelegate next;
 
-    private readonly bool reportOnly;
-
-    // dotnet watch / Browser Link load their script from another localhost port and connect back to it
-    private readonly string scriptSources;
-
-    private readonly string connectSources;
-
-    private readonly string identityProvider;
+    private readonly SecurityHeadersOption option;
 
     private readonly Func<object, Task> onStarting;
 
-    public SecurityHeadersMiddleware(RequestDelegate next, IHostEnvironment environment, CspSetting setting, AuthSetting authSetting)
+    public SecurityHeadersMiddleware(RequestDelegate next, SecurityHeadersOption option)
     {
         this.next = next;
-        reportOnly = setting.ReportOnly;
-        scriptSources = environment.IsDevelopment() ? "'self' http://localhost:*" : "'self'";
-        connectSources = environment.IsDevelopment() ? "'self' http://localhost:* ws://localhost:* wss://localhost:*" : "'self'";
-        identityProvider = new Uri(authSetting.Authority).GetLeftPart(UriPartial.Authority);
+        this.option = option;
         onStarting = OnStarting;
     }
 
@@ -36,22 +23,21 @@ public sealed class SecurityHeadersMiddleware
 
     private Task OnStarting(object state)
     {
-        var context = (HttpContext)state;
-        var headers = context.Response.Headers;
+        var headers = ((HttpContext)state).Response.Headers;
         headers.XContentTypeOptions = "nosniff";
         headers.XFrameOptions = "DENY";
         headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
 
-        // wasm-unsafe-eval runs the .NET runtime. FluentUI needs inline styles.
-        // The IdP is called for discovery and tokens, and framed for the silent renew.
-        var policy = $"default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src {scriptSources} 'wasm-unsafe-eval'; connect-src {connectSources} {identityProvider}; frame-src {identityProvider}";
-        if (reportOnly)
+        if (option.ContentSecurityPolicy is not null)
         {
-            headers.ContentSecurityPolicyReportOnly = policy;
-        }
-        else
-        {
-            headers.ContentSecurityPolicy = policy;
+            if (option.ReportOnly)
+            {
+                headers.ContentSecurityPolicyReportOnly = option.ContentSecurityPolicy;
+            }
+            else
+            {
+                headers.ContentSecurityPolicy = option.ContentSecurityPolicy;
+            }
         }
 
         return Task.CompletedTask;

@@ -8,11 +8,17 @@ public partial class DataPage
 {
     private readonly PaginationState pagination = new() { ItemsPerPage = 15 };
 
+#pragma warning disable CA2213
     private FluentDataGrid<DataResponse> grid = default!;
+#pragma warning restore CA2213
 
     private GridItemsProvider<DataResponse> itemsProvider = default!;
 
     private string? searchName;
+
+    //--------------------------------------------------------------------------------
+    // Property
+    //--------------------------------------------------------------------------------
 
     [Inject]
     public required ApiClient ApiClient { get; set; }
@@ -22,6 +28,10 @@ public partial class DataPage
 
     [Inject]
     public required IToastService ToastService { get; set; }
+
+    //--------------------------------------------------------------------------------
+    // Initialize
+    //--------------------------------------------------------------------------------
 
     protected override void OnInitialized()
     {

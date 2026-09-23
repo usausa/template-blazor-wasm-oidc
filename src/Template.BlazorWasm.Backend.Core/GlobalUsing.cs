@@ -36,3 +36,4 @@ global using Smart.Text;
 global using Template.BlazorWasm.Domain;
 global using Template.BlazorWasm.Models;
 global using Template.BlazorWasm.Models.Entity;
+global using Template.BlazorWasm.Models.Parameters;

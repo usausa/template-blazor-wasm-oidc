@@ -2,6 +2,7 @@ namespace Template.BlazorWasm.Backend.Host.Endpoints;
 
 using Smart.Mapper;
 
+using Template.BlazorWasm.Backend.Host.Application;
 using Template.BlazorWasm.Contracts.Data;
 
 public static partial class DataEndpoints
@@ -54,7 +55,7 @@ public static partial class DataEndpoints
         [Range(0, Int32.MaxValue)] int page = 0,
         [Range(1, 100)] int size = 20)
     {
-        var result = await dataService.QueryPageAsync(name, sort, desc, page, size, cancellationToken);
+        var result = await dataService.QueryPageAsync(name, RequestHelper.Parse(sort, DataSort.Id), desc, page, size, cancellationToken);
         return TypedResults.Ok(new DataListResponse(
             result.Total,
             result.Page,
@@ -76,9 +77,9 @@ public static partial class DataEndpoints
         DataService dataService,
         DataCreateRequest request)
     {
-        var id = await dataService.InsertAsync(request.Name, request.Value);
-        return id.HasValue
-            ? TypedResults.Created($"{ApiRoutes.Data}/{id.Value}", new DataCreateResponse(id.Value))
+        var entity = new DataEntity { Name = request.Name, Value = request.Value };
+        return await dataService.InsertAsync(entity) == DataWriteStatus.Success
+            ? TypedResults.Created($"{ApiRoutes.Data}/{entity.Id}", new DataCreateResponse(entity.Id))
             : TypedResults.Problem(statusCode: StatusCodes.Status409Conflict, title: "Duplicate name.");
     }
 
@@ -100,7 +101,7 @@ public static partial class DataEndpoints
         DataService dataService,
         long id)
     {
-        var deleted = await dataService.DeleteAsync(id);
-        return deleted ? TypedResults.NoContent() : TypedResults.NotFound();
+        var result = await dataService.DeleteAsync(id);
+        return result == DataWriteStatus.Success ? TypedResults.NoContent() : TypedResults.NotFound();
     }
 }

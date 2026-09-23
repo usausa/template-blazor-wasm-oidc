@@ -16,10 +16,11 @@
                 <FluentNumberField @bind-Value="model.Value" Label="値" Min="0" Max="999999999" Class="full-width" />
                 <FluentValidationMessage For="() => model.Value" />
             </div>
-            @foreach (var message in editContext.GetValidationMessages(modelField))
-            {
-                <FluentLabel Color="Color.Error">@message</FluentLabel>
-            }
+            <ListItem Items="ModelMessages" Context="message">
+                <ItemTemplate>
+                    <FluentLabel Color="Color.Error">@message</FluentLabel>
+                </ItemTemplate>
+            </ListItem>
         </FluentStack>
     </EditForm>
 </FluentDialogBody>

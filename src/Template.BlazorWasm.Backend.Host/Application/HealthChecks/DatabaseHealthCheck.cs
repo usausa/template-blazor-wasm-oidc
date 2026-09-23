@@ -1,4 +1,4 @@
-namespace Template.BlazorWasm.Backend.Host.Infrastructure.HealthChecks;
+namespace Template.BlazorWasm.Backend.Host.Application.HealthChecks;
 
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 

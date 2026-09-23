@@ -20,6 +20,9 @@ public partial class DataEditDialog
 
     private bool saving;
 
+    // モデル単位(フィールドに結び付かない)の検証メッセージ
+    private IReadOnlyList<string> ModelMessages => editContext.GetValidationMessages(modelField).ToList();
+
     [Parameter]
     public DataResponse? Content { get; set; }
 

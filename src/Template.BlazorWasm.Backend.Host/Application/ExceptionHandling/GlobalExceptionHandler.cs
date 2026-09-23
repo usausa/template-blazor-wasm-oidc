@@ -1,4 +1,4 @@
-namespace Template.BlazorWasm.Backend.Host.Infrastructure.ExceptionHandling;
+namespace Template.BlazorWasm.Backend.Host.Application.ExceptionHandling;
 
 using Microsoft.AspNetCore.Diagnostics;
 

@@ -1,4 +1,4 @@
-namespace Template.BlazorWasm.Backend.Host.Infrastructure.Authentication;
+namespace Template.BlazorWasm.Backend.Host.Application.Authentication;
 
 using System.Text.Json;
 

@@ -1,6 +1,4 @@
-namespace Template.BlazorWasm.Backend.Host.Infrastructure.Filters;
-
-using Template.BlazorWasm.Backend.Host.Application.Telemetry;
+namespace Template.BlazorWasm.Backend.Host.Application.Telemetry;
 
 public sealed class RequestMetricsEndpointFilter : IEndpointFilter
 {

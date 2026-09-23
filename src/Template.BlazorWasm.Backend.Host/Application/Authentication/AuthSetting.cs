@@ -1,4 +1,4 @@
-namespace Template.BlazorWasm.Backend.Host.Settings;
+namespace Template.BlazorWasm.Backend.Host.Application.Authentication;
 
 public sealed class AuthSetting
 {
