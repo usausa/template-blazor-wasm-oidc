@@ -24,7 +24,7 @@ public partial class DataEditDialog
     private IReadOnlyList<string> ModelMessages => editContext.GetValidationMessages(modelField).ToList();
 
     [Parameter]
-    public DataResponse? Content { get; set; }
+    public DataListEntry? Content { get; set; }
 
     [CascadingParameter]
     public FluentDialog Dialog { get; set; } = default!;
@@ -56,12 +56,12 @@ public partial class DataEditDialog
         {
             if (Content is null)
             {
-                await ApiClient.CreateDataAsync(new DataCreateRequest(model.Name, model.Value));
+                await ApiClient.DataCreateAsync(new DataCreateRequest(model.Name, model.Value));
                 ToastService.ShowSuccess("データを作成しました");
             }
             else
             {
-                await ApiClient.UpdateDataAsync(Content.Id, new DataUpdateRequest(model.Name, model.Value));
+                await ApiClient.DataUpdateAsync(Content.Id, new DataUpdateRequest(model.Name, model.Value));
                 ToastService.ShowSuccess("データを更新しました");
             }
 

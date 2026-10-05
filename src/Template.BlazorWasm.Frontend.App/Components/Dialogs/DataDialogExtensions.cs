@@ -5,7 +5,7 @@ using Microsoft.FluentUI.AspNetCore.Components;
 public static class DataDialogExtensions
 {
     // The dialog saves and reports the result itself. True unless it was cancelled.
-    public static async ValueTask<bool> ShowEditDialogAsync(this IDialogService dialog, string title, DataResponse? entry)
+    public static async ValueTask<bool> ShowEditDialogAsync(this IDialogService dialog, string title, DataListEntry? entry)
     {
         var parameters = new DialogParameters
         {

@@ -1,6 +1,7 @@
 namespace Template.BlazorWasm;
 
 using System.Net.Http.Headers;
+using System.Text;
 
 using Template.BlazorWasm.Contracts.Data;
 
@@ -111,5 +112,24 @@ public sealed class AuthTests : IClassFixture<TestApplicationFactory>
         // 未知のキーはSQLのelse(Id順=登録順)へ落ちる
         Assert.NotNull(unknownKey);
         Assert.Equal(InsertionOrder, unknownKey.Items.Select(static x => x.Name));
+    }
+
+    [Theory]
+    [InlineData("{")]
+    [InlineData("""{"name":"JsonItem","value":"1"}""")]
+    [InlineData("""{"name":"JsonItem","name":"JsonItem","value":1}""")]
+    [InlineData("""{"name":"JsonItem","value":1,"ownerId":"other"}""")]
+    public async Task CreateWithInvalidJsonReturnsBadRequest(string body)
+    {
+        // Arrange
+        var client = CreateClientWithToken("admin", "Administrator");
+        using var content = new StringContent(body, Encoding.UTF8, "application/json");
+
+        // Act
+        var response = await client.PostAsync(new Uri("/api/data", UriKind.Relative), content, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal("application/problem+json", response.Content.Headers.ContentType?.MediaType);
     }
 }

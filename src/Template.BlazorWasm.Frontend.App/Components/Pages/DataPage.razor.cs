@@ -9,10 +9,10 @@ public partial class DataPage
     private readonly PaginationState pagination = new() { ItemsPerPage = 15 };
 
 #pragma warning disable CA2213
-    private FluentDataGrid<DataResponse> grid = default!;
+    private FluentDataGrid<DataListEntry> grid = default!;
 #pragma warning restore CA2213
 
-    private GridItemsProvider<DataResponse> itemsProvider = default!;
+    private GridItemsProvider<DataListEntry> itemsProvider = default!;
 
     private string? searchName;
 
@@ -43,7 +43,7 @@ public partial class DataPage
 
                 // 並べ替えはサーバー側で行うため、グリッドが選んだ列と昇降をAPIへ渡す
                 var sorted = request.GetSortByProperties().FirstOrDefault();
-                var result = await ApiClient.ListDataAsync(
+                var result = await ApiClient.DataListAsync(
                     searchName,
                     sorted.PropertyName,
                     sorted.Direction == SortDirection.Descending,
@@ -56,7 +56,7 @@ public partial class DataPage
             {
                 // セッション失効時は対話ログインへ誘導する
                 ex.Redirect();
-                return GridItemsProviderResult.From(new List<DataResponse>(), 0);
+                return GridItemsProviderResult.From(new List<DataListEntry>(), 0);
             }
         };
     }
@@ -83,7 +83,7 @@ public partial class DataPage
         }
     }
 
-    private async Task OnEditClickAsync(DataResponse entry)
+    private async Task OnEditClickAsync(DataListEntry entry)
     {
         if (await DialogService.ShowEditDialogAsync("データ編集", entry))
         {
@@ -95,7 +95,7 @@ public partial class DataPage
     // Delete
     //--------------------------------------------------------------------------------
 
-    private async Task OnDeleteClickAsync(DataResponse entry)
+    private async Task OnDeleteClickAsync(DataListEntry entry)
     {
         var dialog = await DialogService.ShowConfirmationAsync($"{entry.Name} を削除します。よろしいですか?", "削除", "キャンセル", "削除確認");
         var result = await dialog.Result;
@@ -106,7 +106,7 @@ public partial class DataPage
 
         try
         {
-            await ApiClient.DeleteDataAsync(entry.Id);
+            await ApiClient.DataDeleteAsync(entry.Id);
 
             ToastService.ShowSuccess("データを削除しました");
             await grid.RefreshDataAsync();

@@ -13,7 +13,7 @@
         <FluentButton Appearance="Appearance.Accent" OnClick="OnCreateClickAsync">新規作成</FluentButton>
     </FluentStack>
 
-    <FluentDataGrid @ref="grid" ItemsProvider="itemsProvider" Pagination="pagination" TGridItem="DataResponse">
+    <FluentDataGrid @ref="grid" ItemsProvider="itemsProvider" Pagination="pagination" TGridItem="DataListEntry">
         <ChildContent>
             <PropertyColumn Property="@(x => x.Id)" Title="ID" Width="80px" Sortable="true" />
             <PropertyColumn Property="@(x => x.Name)" Title="名前" Sortable="true" />

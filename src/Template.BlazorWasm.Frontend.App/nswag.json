@@ -12,8 +12,9 @@
       "generateClientInterfaces": false,
       "generateDtoTypes": true,
       "excludedTypeNames": [
-        "DataResponse",
         "DataListResponse",
+        "DataListEntry",
+        "DataGetResponse",
         "DataCreateRequest",
         "DataCreateResponse",
         "DataUpdateRequest"
