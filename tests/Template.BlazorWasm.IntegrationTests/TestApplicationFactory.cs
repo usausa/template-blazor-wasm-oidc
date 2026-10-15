@@ -35,7 +35,7 @@ public sealed class TestApplicationFactory : WebApplicationFactory<Program>
         // IdPメタデータの取得を行わず、テスト用署名鍵でトークンを検証する
         builder.ConfigureTestServices(static services =>
         {
-            services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, static options =>
+            services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, static options =>
             {
                 options.Configuration = new OpenIdConnectConfiguration { Issuer = Issuer };
                 options.TokenValidationParameters.IssuerSigningKey = SigningKey;
