@@ -4,13 +4,13 @@
 <PageTitle>データ - テンプレート</PageTitle>
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
-    <FluentLabel Typo="Typography.H4">データ一覧</FluentLabel>
+    <FluentText As="TextTag.H4" Size="TextSize.Size500" Weight="TextWeight.Semibold">データ一覧</FluentText>
 
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="8" VerticalAlignment="VerticalAlignment.Bottom">
-        <FluentTextField @bind-Value="searchName" Label="名前" Maxlength="@Length.Name" />
-        <FluentButton Appearance="Appearance.Accent" OnClick="OnSearchClickAsync">検索</FluentButton>
+        <FluentTextInput @bind-Value="searchName" Label="名前" MaxLength="@Length.Name" />
+        <FluentButton Appearance="ButtonAppearance.Primary" OnClick="OnSearchClickAsync">検索</FluentButton>
         <FluentSpacer />
-        <FluentButton Appearance="Appearance.Accent" OnClick="OnCreateClickAsync">新規作成</FluentButton>
+        <FluentButton Appearance="ButtonAppearance.Primary" OnClick="OnCreateClickAsync">新規作成</FluentButton>
     </FluentStack>
 
     <FluentDataGrid @ref="grid" ItemsProvider="itemsProvider" Pagination="pagination" TGridItem="DataListEntry">
@@ -20,8 +20,8 @@
             <PropertyColumn Property="@(x => x.Value)" Title="値" Width="120px" Sortable="true" />
             <PropertyColumn Property="@(x => x.CreatedAt)" Format="yyyy/MM/dd HH:mm:ss" Title="作成日時" Width="200px" Sortable="true" />
             <TemplateColumn Title="操作" Width="180px">
-                <FluentButton Appearance="Appearance.Outline" OnClick="@(() => OnEditClickAsync(context))">編集</FluentButton>
-                <FluentButton Appearance="Appearance.Outline" OnClick="@(() => OnDeleteClickAsync(context))">削除</FluentButton>
+                <FluentButton Appearance="ButtonAppearance.Outline" Size="ButtonSize.Small" OnClick="@(() => OnEditClickAsync(context))">編集</FluentButton>
+                <FluentButton Appearance="ButtonAppearance.Outline" Size="ButtonSize.Small" OnClick="@(() => OnDeleteClickAsync(context))">削除</FluentButton>
             </TemplateColumn>
         </ChildContent>
         <EmptyContent>データがありません</EmptyContent>

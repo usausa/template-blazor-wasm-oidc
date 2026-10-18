@@ -1,31 +1,21 @@
-@implements IDialogContentComponent<DataListEntry?>
-
-<FluentDialogHeader ShowDismiss="true">
-    <FluentLabel Typo="Typography.PaneHeader">@Dialog.Instance.Parameters.Title</FluentLabel>
-</FluentDialogHeader>
-
 <FluentDialogBody>
-    <EditForm EditContext="editContext">
-        <DataAnnotationsValidator />
-        <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
-            <div class="full-width">
-                <FluentTextField @bind-Value="model.Name" Label="名前" Maxlength="@Length.Name" Class="full-width" />
-                <FluentValidationMessage For="() => model.Name" />
-            </div>
-            <div class="full-width">
-                <FluentNumberField @bind-Value="model.Value" Label="値" Min="0" Max="999999999" Class="full-width" />
-                <FluentValidationMessage For="() => model.Value" />
-            </div>
-            <ListItem Items="ModelMessages" Context="message">
-                <ItemTemplate>
-                    <FluentLabel Color="Color.Error">@message</FluentLabel>
-                </ItemTemplate>
-            </ListItem>
-        </FluentStack>
-    </EditForm>
-</FluentDialogBody>
+    <ChildContent>
+        <EditForm EditContext="editContext">
+            <DataAnnotationsValidator />
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+                <FluentTextInput @bind-Value="model.Name" Label="名前" MaxLength="@Length.Name" Width="100%" />
+                <FluentNumberInput @bind-Value="model.Value" Label="値" Min="0" Max="999999999" Width="100%" />
+                <ListItem Items="ModelMessages" Context="message">
+                    <ItemTemplate>
+                        <FluentText Color="Color.Error">@message</FluentText>
+                    </ItemTemplate>
+                </ListItem>
+            </FluentStack>
+        </EditForm>
+    </ChildContent>
 
-<FluentDialogFooter>
-    <FluentButton Appearance="Appearance.Accent" Loading="saving" OnClick="OnSaveClickAsync">保存</FluentButton>
-    <FluentButton Appearance="Appearance.Neutral" OnClick="OnCancelClickAsync">キャンセル</FluentButton>
-</FluentDialogFooter>
+    <ActionTemplate>
+        <FluentButton Appearance="ButtonAppearance.Primary" Loading="saving" OnClick="OnSaveClickAsync">保存</FluentButton>
+        <FluentButton Appearance="ButtonAppearance.Default" OnClick="OnCancelClickAsync">キャンセル</FluentButton>
+    </ActionTemplate>
+</FluentDialogBody>

@@ -27,13 +27,13 @@ public partial class DataEditDialog
     public DataListEntry? Content { get; set; }
 
     [CascadingParameter]
-    public FluentDialog Dialog { get; set; } = default!;
+    public IDialogInstance Dialog { get; set; } = default!;
 
     [Inject]
     public required ApiClient ApiClient { get; set; }
 
     [Inject]
-    public required IToastService ToastService { get; set; }
+    public required INotificationService NotificationService { get; set; }
 
     protected override void OnInitialized()
     {
@@ -57,12 +57,12 @@ public partial class DataEditDialog
             if (Content is null)
             {
                 await ApiClient.DataCreateAsync(new DataCreateRequest(model.Name, model.Value));
-                ToastService.ShowSuccess("データを作成しました");
+                await NotificationService.ShowSuccessToastAsync("データを作成しました");
             }
             else
             {
                 await ApiClient.DataUpdateAsync(Content.Id, new DataUpdateRequest(model.Name, model.Value));
-                ToastService.ShowSuccess("データを更新しました");
+                await NotificationService.ShowSuccessToastAsync("データを更新しました");
             }
 
             await Dialog.CloseAsync();
@@ -79,7 +79,7 @@ public partial class DataEditDialog
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             // The entry was deleted meanwhile. Close so that the caller refreshes the list.
-            ToastService.ShowError("対象が存在しません");
+            await NotificationService.ShowErrorToastAsync("対象が存在しません");
             await Dialog.CloseAsync();
         }
         catch (AccessTokenNotAvailableException ex)

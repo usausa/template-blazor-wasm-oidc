@@ -56,9 +56,9 @@ public sealed class DataCrudTests : E2ETestBase
         // When
         await Page.GotoAsync(factory.ServerAddress + "/data");
         await Page.Locator("fluent-button", new PageLocatorOptions { HasTextString = "新規作成" }).ClickAsync();
-        await Expect(Page.Locator("fluent-dialog fluent-text-field input")).ToBeVisibleAsync();
-        await Page.Locator("fluent-dialog fluent-text-field input").FillAsync("E2EItem");
-        await Page.Locator("fluent-dialog fluent-number-field input").FillAsync("123");
+        await Expect(Page.Locator("fluent-dialog fluent-text-input input").Nth(0)).ToBeVisibleAsync();
+        await Page.Locator("fluent-dialog fluent-text-input input").Nth(0).FillAsync("E2EItem");
+        await Page.Locator("fluent-dialog fluent-text-input input").Nth(1).FillAsync("123");
         await Page.Locator("fluent-dialog fluent-button", new PageLocatorOptions { HasTextString = "保存" }).ClickAsync();
 
         // Then

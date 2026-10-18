@@ -27,7 +27,7 @@ public partial class DataPage
     public required IDialogService DialogService { get; set; }
 
     [Inject]
-    public required IToastService ToastService { get; set; }
+    public required INotificationService NotificationService { get; set; }
 
     //--------------------------------------------------------------------------------
     // Initialize
@@ -46,7 +46,7 @@ public partial class DataPage
                 var result = await ApiClient.DataListAsync(
                     searchName,
                     sorted.PropertyName,
-                    sorted.Direction == SortDirection.Descending,
+                    sorted.Direction == DataGridSortDirection.Descending,
                     page,
                     pagination.ItemsPerPage,
                     request.CancellationToken);
@@ -97,8 +97,7 @@ public partial class DataPage
 
     private async Task OnDeleteClickAsync(DataListEntry entry)
     {
-        var dialog = await DialogService.ShowConfirmationAsync($"{entry.Name} を削除します。よろしいですか?", "削除", "キャンセル", "削除確認");
-        var result = await dialog.Result;
+        var result = await DialogService.ShowConfirmationAsync($"{entry.Name} を削除します。よろしいですか?", title: "削除確認", primaryButton: "削除", secondaryButton: "キャンセル");
         if (result.Cancelled)
         {
             return;
@@ -108,16 +107,16 @@ public partial class DataPage
         {
             await ApiClient.DataDeleteAsync(entry.Id);
 
-            ToastService.ShowSuccess("データを削除しました");
+            await NotificationService.ShowSuccessToastAsync("データを削除しました");
             await grid.RefreshDataAsync();
         }
         catch (ApiException ex) when (ex.StatusCode == 403)
         {
-            ToastService.ShowError("削除の権限がありません");
+            await NotificationService.ShowErrorToastAsync("削除の権限がありません");
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            ToastService.ShowError("対象が存在しません");
+            await NotificationService.ShowErrorToastAsync("対象が存在しません");
             await grid.RefreshDataAsync();
         }
         catch (AccessTokenNotAvailableException ex)

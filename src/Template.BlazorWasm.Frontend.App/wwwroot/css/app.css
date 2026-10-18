@@ -59,14 +59,9 @@ html, body {
  Layout
 -------------------------------------------------*/
 
-.main {
-    flex: 1;
-    overflow: hidden;
-}
-
-.body-content {
-    height: calc(100dvh - 50px);
-    overflow-y: auto;
+#main-menu {
+    padding-top: 12px;
+    height: 100%;
 }
 
 .content {

@@ -4,19 +4,19 @@
 <PageTitle>ホーム - テンプレート</PageTitle>
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
-    <FluentLabel Typo="Typography.H4">ホーム</FluentLabel>
+    <FluentText As="TextTag.H4" Size="TextSize.Size500" Weight="TextWeight.Semibold">ホーム</FluentText>
     <FluentCard>
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="8">
-            <FluentLabel Typo="Typography.H6">一覧画面</FluentLabel>
-            <FluentAnchor Href="data" Appearance="Appearance.Hypertext">データ一覧(検索/CRUD)</FluentAnchor>
+            <FluentText As="TextTag.H6" Size="TextSize.Size400" Weight="TextWeight.Semibold">一覧画面</FluentText>
+            <FluentLink Href="data">データ一覧(検索/CRUD)</FluentLink>
         </FluentStack>
     </FluentCard>
     <FluentCard>
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="8">
-            <FluentLabel Typo="Typography.H6">その他</FluentLabel>
-            <FluentAnchor Href="/swagger" Target="_blank" Appearance="Appearance.Hypertext">Swagger UI</FluentAnchor>
-            <FluentAnchor Href="/redoc" Target="_blank" Appearance="Appearance.Hypertext">ReDoc</FluentAnchor>
-            <FluentAnchor Href="/health" Target="_blank" Appearance="Appearance.Hypertext">Health check</FluentAnchor>
+            <FluentText As="TextTag.H6" Size="TextSize.Size400" Weight="TextWeight.Semibold">その他</FluentText>
+            <FluentLink Href="/swagger" Target="LinkTarget.Blank">Swagger UI</FluentLink>
+            <FluentLink Href="/redoc" Target="LinkTarget.Blank">ReDoc</FluentLink>
+            <FluentLink Href="/health" Target="LinkTarget.Blank">Health check</FluentLink>
         </FluentStack>
     </FluentCard>
 </FluentStack>

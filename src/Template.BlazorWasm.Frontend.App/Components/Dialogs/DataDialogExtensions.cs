@@ -7,15 +7,12 @@ public static class DataDialogExtensions
     // The dialog saves and reports the result itself. True unless it was cancelled.
     public static async ValueTask<bool> ShowEditDialogAsync(this IDialogService dialog, string title, DataListEntry? entry)
     {
-        var parameters = new DialogParameters
+        var result = await dialog.ShowDialogAsync<DataEditDialog>(options =>
         {
-            Title = title,
-            PreventDismissOnOverlayClick = true
-        };
-        var reference = entry is null
-            ? await dialog.ShowDialogAsync<DataEditDialog>(parameters)
-            : await dialog.ShowDialogAsync<DataEditDialog>(entry, parameters);
-        var result = await reference.Result;
+            options.Header.Title = title;
+            options.Header.CloseAction.Visible = true;
+            options.Parameters.Add(nameof(DataEditDialog.Content), entry);
+        });
         return !result.Cancelled;
     }
 }

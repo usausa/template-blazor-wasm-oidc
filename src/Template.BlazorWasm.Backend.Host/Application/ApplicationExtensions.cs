@@ -561,6 +561,9 @@ public static class ApplicationExtensions
             });
         }
 
+        // Static assets
+        app.MapStaticAssets();
+
         // API
         app.MapDataEndpoints();
 

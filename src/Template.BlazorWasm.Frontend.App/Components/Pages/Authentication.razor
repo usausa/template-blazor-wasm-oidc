@@ -30,20 +30,20 @@
     </CompletingLogOut>
     <LogOutSucceeded>
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
-            <FluentLabel Typo="Typography.H4">ログアウトしました</FluentLabel>
-            <FluentAnchor Href="/" Appearance="Appearance.Hypertext">ホームへ戻る</FluentAnchor>
+            <FluentText As="TextTag.H4" Size="TextSize.Size500" Weight="TextWeight.Semibold">ログアウトしました</FluentText>
+            <FluentLink Href="/">ホームへ戻る</FluentLink>
         </FluentStack>
     </LogOutSucceeded>
     <LogInFailed Context="errorMessage">
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
-            <FluentMessageBar Title="ログインに失敗しました" Intent="MessageIntent.Error" AllowDismiss="false">@errorMessage</FluentMessageBar>
-            <FluentAnchor Href="/" Appearance="Appearance.Hypertext">ホームへ戻る</FluentAnchor>
+            <FluentMessageBar Title="ログインに失敗しました" Intent="MessageBarIntent.Error" AllowDismiss="false">@errorMessage</FluentMessageBar>
+            <FluentLink Href="/">ホームへ戻る</FluentLink>
         </FluentStack>
     </LogInFailed>
     <LogOutFailed Context="errorMessage">
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
-            <FluentMessageBar Title="ログアウトに失敗しました" Intent="MessageIntent.Error" AllowDismiss="false">@errorMessage</FluentMessageBar>
-            <FluentAnchor Href="/" Appearance="Appearance.Hypertext">ホームへ戻る</FluentAnchor>
+            <FluentMessageBar Title="ログアウトに失敗しました" Intent="MessageBarIntent.Error" AllowDismiss="false">@errorMessage</FluentMessageBar>
+            <FluentLink Href="/">ホームへ戻る</FluentLink>
         </FluentStack>
     </LogOutFailed>
 </RemoteAuthenticatorView>

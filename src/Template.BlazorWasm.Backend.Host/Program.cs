@@ -64,10 +64,6 @@ app.UseCompression();
 // HTTP log
 app.UseHttpLog();
 
-// Static files (Blazor WebAssembly assets)
-app.UseBlazorFrameworkFiles();
-app.UseStaticFiles();
-
 // Authentication
 app.UseAuthentication();
 app.UseAuthorization();
