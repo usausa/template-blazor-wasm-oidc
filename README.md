@@ -1,50 +1,52 @@
 # Template project for Blazor WebAssembly (OIDC)
 
-template-blazor-wasm をベースに、認証を自前JWTからOIDC(認可コード+PKCE)へ置き換えた変種。
+English | [日本語](README.ja.md)
 
-## ベースとの差分
+A variant based on template-blazor-wasm that replaces the custom JWT authentication with OIDC (authorization code + PKCE).
 
-- Frontend: `Microsoft.AspNetCore.Components.WebAssembly.Authentication` の `AddOidcAuthentication`(認可コード+PKCE)。IdP設定は `wwwroot/appsettings.json`
-- Backend: JwtBearer検証をIdPメタデータベース(`Authority` 指定、署名鍵はディスカバリ)へ変更。ロールはKeycloakの `realm_access.roles` を `role` クレームへマッピング
-- Account系(テーブル/サービス/シード)と `/api/auth/login` は撤去(ユーザー管理はIdP側)
+## Differences from the base
 
-## 開発用IdP(Keycloak)
+- Frontend: `AddOidcAuthentication` of `Microsoft.AspNetCore.Components.WebAssembly.Authentication` (authorization code + PKCE). The IdP settings are in `wwwroot/appsettings.json`
+- Backend: The JwtBearer validation is changed to be based on the IdP metadata (`Authority` specified, signing keys from discovery). Roles are mapped from `realm_access.roles` of Keycloak to the `role` claim
+- The Account parts (tables/services/seed) and `/api/auth/login` were removed (users are managed on the IdP side)
 
-Podmanで起動する(初回にレルム `template` を自動インポート)。
+## IdP for development (Keycloak)
+
+Start it with Podman (the realm `template` is imported automatically on the first start).
 
 ```
 podman run --rm -p 8180:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin -v .\keycloak:/opt/keycloak/data/import quay.io/keycloak/keycloak:26.4 start-dev --import-realm
 ```
 
-- レルム: `template` / クライアント: `template-blazor-wasm`(public、PKCE S256、redirect URI `http://localhost:8080/*`)
-- 初期ユーザー: `admin` / `admin`(Administratorロール)、`user` / `user`(ロールなし。削除操作は403になる)
-- 管理コンソール: http://localhost:8180 (admin / admin)
+- Realm: `template` / client: `template-blazor-wasm` (public, PKCE S256, redirect URI `http://localhost:8080/*`)
+- Initial users: `admin` / `admin` (Administrator role), `user` / `user` (no role. Delete operations return 403)
+- Admin console: http://localhost:8180 (admin / admin)
 
-IdPを変更する場合は、`wwwroot/appsettings.json`(Oidcセクション)、Backendの `Auth` 設定、`index.html` のpreconnect先、ロールクレームのマッピング(`KeycloakClaims` / `KeycloakClaimsPrincipalFactory`)を差し替える。
+To change the IdP, replace `wwwroot/appsettings.json` (the Oidc section), the `Auth` settings of the Backend, the preconnect target in `index.html`, and the mapping of the role claims (`KeycloakClaims` / `KeycloakClaimsPrincipalFactory`).
 
-## テスト
+## Tests
 
-- UnitTests / IntegrationTests: IdP不要(統合テストはテスト用署名鍵でトークンを検証)
-- E2ETests: 認証ガードのテストはIdP不要。ログイン〜CRUD一巡(`DataCrudTest`)は上記Keycloakを起動し、環境変数 `E2E_OIDC=1` を設定したときのみ実行される
+- UnitTests / IntegrationTests: No IdP needed (the integration tests validate the tokens with a test signing key)
+- E2ETests: The authentication guard tests need no IdP. The round trip from login through CRUD (`DataCrudTest`) runs only when the Keycloak above is started and the environment variable `E2E_OIDC=1` is set
 
-E2E(`tests/Template.BlazorWasm.E2ETests`)はPlaywrightで動かす。日常の実行には含めず、必要なときとリリース前に流す。コマンドはリポジトリ直下のPowerShellで実行する。
+The E2E tests (`tests/Template.BlazorWasm.E2ETests`) run with Playwright. They are not part of the daily runs, and are run when needed and before releases. Run the commands in PowerShell at the repository root.
 
 ```powershell
-# ブラウザの入手(初回。ビルドで出力されるスクリプトを使う)
+# Get the browsers (first time. Uses the script output by the build)
 dotnet build tests/Template.BlazorWasm.E2ETests
 pwsh tests/Template.BlazorWasm.E2ETests/bin/Debug/net10.0/playwright.ps1 install
 
-# 実行(既定は Chromium・画面なし)
+# Run (Chromium and headless by default)
 dotnet run --project tests/Template.BlazorWasm.E2ETests
 
-# 画面を出して実行
+# Run with the browser shown
 $env:HEADED = "1"; dotnet run --project tests/Template.BlazorWasm.E2ETests; Remove-Item Env:HEADED
 
-# ブラウザを切り替える(chromium / firefox / webkit)
+# Switch the browser (chromium / firefox / webkit)
 $env:BROWSER = "firefox"; dotnet run --project tests/Template.BlazorWasm.E2ETests; Remove-Item Env:BROWSER
 
-# Playwright Inspector で 1 手ずつ実行
+# Run step by step with Playwright Inspector
 $env:PWDEBUG = "1"; dotnet run --project tests/Template.BlazorWasm.E2ETests; Remove-Item Env:PWDEBUG
 ```
 
-- 失敗したテストだけ、操作ごとの画面・DOM・通信・コンソールを記録したトレースを `tests/Template.BlazorWasm.E2ETests/bin/Debug/net10.0/playwright-traces/<テストの表示名>.zip` に残す。`pwsh tests/Template.BlazorWasm.E2ETests/bin/Debug/net10.0/playwright.ps1 show-trace <zip>` か https://trace.playwright.dev で開く
+- Only for failed tests, a trace that records the screen, DOM, network, and console of each action is saved to `tests/Template.BlazorWasm.E2ETests/bin/Debug/net10.0/playwright-traces/<test display name>.zip`. Open it with `pwsh tests/Template.BlazorWasm.E2ETests/bin/Debug/net10.0/playwright.ps1 show-trace <zip>` or https://trace.playwright.dev
