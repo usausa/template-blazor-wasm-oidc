@@ -14,29 +14,29 @@
 
 # 🔀 ベースとの差分
 
-- Frontend: `Microsoft.AspNetCore.Components.WebAssembly.Authentication` の `AddOidcAuthentication`(認可コード+PKCE)。IdP設定は `wwwroot/appsettings.json`
-- Backend: JwtBearer検証をIdPメタデータベース(`Authority` 指定、署名鍵はディスカバリ)へ変更。ロールはKeycloakの `realm_access.roles` を `role` クレームへマッピング
-- 自前のJWT発行(`JwtTokenProvider`)・リフレッシュトークン(テーブル/サービス)・Account系(テーブル/サービス/シード/PBKDF2)と `/api/auth/login`・`/api/auth/refresh`・`/api/auth/logout` は撤去(ユーザー管理はIdP側)
-- Frontendのログイン画面とトークンの保持・更新(`TokenStore` / `TokenRefreshService` / `JwtAuthorizationMessageHandler` / `JwtAuthenticationStateProvider`)は撤去(`AddOidcAuthentication` に置き換え)
+- Frontend: `Microsoft.AspNetCore.Components.WebAssembly.Authentication` の `AddOidcAuthentication`(認可コード+PKCE)。IdP 設定は `wwwroot/appsettings.json`
+- Backend: JwtBearer 検証を IdP メタデータベース(`Authority` 指定、署名鍵はディスカバリ)へ変更。ロールは Keycloak の `realm_access.roles` を `role` クレームへマッピング
+- 自前の JWT 発行(`JwtTokenProvider`)・リフレッシュトークン(テーブル/サービス)・Account 系(テーブル/サービス/シード/PBKDF2)と `/api/auth/login`・`/api/auth/refresh`・`/api/auth/logout` は撤去(ユーザー管理は IdP 側)
+- Frontend のログイン画面とトークンの保持・更新(`TokenStore` / `TokenRefreshService` / `JwtAuthorizationMessageHandler` / `JwtAuthenticationStateProvider`)は撤去(`AddOidcAuthentication` に置き換え)
 
-# 🔐 開発用IdP(Keycloak)
+# 🔐 開発用 IdP(Keycloak)
 
-Podmanで起動する(初回にレルム `template` を自動インポート)。
+Podman で起動する(初回にレルム `template` を自動インポート)。
 
 ```
 podman run --rm -p 8180:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin -v .\keycloak:/opt/keycloak/data/import quay.io/keycloak/keycloak:26.4 start-dev --import-realm
 ```
 
 - レルム: `template` / クライアント: `template-blazor-wasm`(public、PKCE S256、redirect URI `http://localhost:8080/*`)
-- 初期ユーザー: `admin` / `admin`(Administratorロール)、`user` / `user`(ロールなし。削除操作は403になる)
+- 初期ユーザー: `admin` / `admin`(Administrator ロール)、`user` / `user`(ロールなし。削除操作は 403 になる)
 - 管理コンソール: http://localhost:8180 (admin / admin)
 
-IdPを変更する場合は、`wwwroot/appsettings.json`(Oidcセクション)、Backendの `Auth` 設定、`index.html` のpreconnect先、ロールクレームのマッピング(`KeycloakClaims` / `KeycloakClaimsPrincipalFactory`)を差し替える。
+IdP を変更する場合は、`wwwroot/appsettings.json`(Oidc セクション)、Backend の `Auth` 設定、`index.html` の preconnect 先、ロールクレームのマッピング(`KeycloakClaims` / `KeycloakClaimsPrincipalFactory`)を差し替える。
 
 # 🧪 テスト
 
-- UnitTests / IntegrationTests: IdP不要(統合テストはテスト用署名鍵でトークンを検証)
-- E2ETests: 認証ガードのテストはIdP不要。ログイン〜CRUD一巡(`DataCrudTests`)は上記Keycloakを起動し、環境変数 `E2E_OIDC=1` を設定したときのみ実行される
+- UnitTests / IntegrationTests: IdP 不要(統合テストはテスト用署名鍵でトークンを検証)
+- E2ETests: 認証ガードのテストは IdP 不要。ログイン〜CRUD 一巡(`DataCrudTests`)は上記 Keycloak を起動し、環境変数 `E2E_OIDC=1` を設定したときのみ実行される
 
 # 🔗 関連プロジェクト
 
