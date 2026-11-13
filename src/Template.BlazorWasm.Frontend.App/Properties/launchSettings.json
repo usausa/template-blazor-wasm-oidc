@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Template.BlazorWasm.Frontend.App": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:64873;http://localhost:64874"
+    }
+  }
+}

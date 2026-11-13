@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.6.1">
+﻿<Project Sdk="Aspire.AppHost.Sdk/13.6.5">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,11 +7,6 @@
     <AspireUseCliBundle>true</AspireUseCliBundle>
     <UserSecretsId>7c2f89a1-30de-46e5-8d10-64e2b4a5c7f3</UserSecretsId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <!-- Transitive pin: GHSA-qhrr-8q5h-9q3h -->
-    <PackageReference Include="MessagePack" Version="2.5.307" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Template.BlazorWasm.Backend.Host\Template.BlazorWasm.Backend.Host.csproj" />
