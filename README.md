@@ -10,7 +10,7 @@ English | [日本語](README.ja.md)
 | --- | --- |
 | Auth | OIDC (authorization code + PKCE) / Login and logout redirects (RemoteAuthenticatorView) / JWT Bearer (IdP discovery) / Role claim mapping (Keycloak `realm_access`) / Role policy |
 | IdP | IdP for development (Keycloak, realm import) |
-| Test | Token validation without the IdP (test signing key) / Auth guard E2E / Login to CRUD E2E (Keycloak, opt-in) |
+| Test | Token validation without the IdP (test signing key) |
 
 # 🔀 Differences from the base
 
@@ -32,11 +32,6 @@ podman run --rm -p 8180:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRA
 - Admin console: http://localhost:8180 (admin / admin)
 
 To change the IdP, replace `wwwroot/appsettings.json` (the Oidc section), the `Auth` settings of the Backend, the preconnect target in `index.html`, and the mapping of the role claims (`KeycloakClaims` / `KeycloakClaimsPrincipalFactory`).
-
-# 🧪 Tests
-
-- UnitTests / IntegrationTests: No IdP needed (the integration tests validate the tokens with a test signing key)
-- E2ETests: The authentication guard tests need no IdP. The round trip from login through CRUD (`DataCrudTests`) runs only when the Keycloak above is started and the environment variable `E2E_OIDC=1` is set
 
 # 🔗 Related Projects
 

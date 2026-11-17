@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <CodeAnalysisRuleSet>..\..\Analyzers.ruleset</CodeAnalysisRuleSet>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
@@ -18,14 +18,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.13" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.13" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="10.0.13" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.13" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="11.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="11.0.0" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="5.0.1" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="5.0.1" />
-    <PackageReference Include="Usa.Smart.Blazor" Version="2.8.0" />
+    <PackageReference Include="Usa.Smart.Blazor" Version="3.0.0" />
     <PackageReference Include="NSwag.MSBuild" Version="14.8.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -44,7 +44,7 @@
   </PropertyGroup>
 
   <Target Name="GenerateApiClient" BeforeTargets="BeforeCompile" Condition="Exists('$(OpenApiDocumentPath)')" Inputs="$(OpenApiDocumentPath);nswag.json" Outputs="Services\ApiClient.g.cs">
-    <Exec Command="$(NSwagExe_Net100) run nswag.json" WorkingDirectory="$(ProjectDir)" />
+    <Exec Command="$(NSwagExe_Net110) run nswag.json" WorkingDirectory="$(ProjectDir)" />
 
     <!-- 初回生成時(グロブ評価後)でも同一ビルドでコンパイル対象に含める -->
     <ItemGroup>

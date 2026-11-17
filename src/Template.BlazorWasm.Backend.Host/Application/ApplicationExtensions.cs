@@ -543,8 +543,6 @@ public static class ApplicationExtensions
         // Develop
         if (app.Environment.IsDevelopment())
         {
-            app.UseWebAssemblyDebugging();
-
             app.MapOpenApi();
             // [MEMO] Add yaml support
             app.MapOpenApi("/openapi/{documentName}.yaml");

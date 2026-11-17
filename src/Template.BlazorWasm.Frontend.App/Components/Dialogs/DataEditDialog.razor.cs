@@ -46,7 +46,7 @@ public partial class DataEditDialog
     private async Task OnSaveClickAsync()
     {
         messageStore.Clear();
-        if (!editContext.Validate())
+        if (!await editContext.ValidateAsync())
         {
             return;
         }

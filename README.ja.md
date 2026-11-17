@@ -10,7 +10,7 @@
 | --- | --- |
 | 認証 | OIDC(認可コード + PKCE) / ログインとログアウトのリダイレクト(RemoteAuthenticatorView) / JWT Bearer(IdP ディスカバリー) / ロールクレームのマッピング(Keycloak `realm_access`) / ロールポリシー |
 | IdP | 開発用 IdP(Keycloak・レルムインポート) |
-| テスト | IdP なしのトークン検証(テスト用署名鍵) / 認証ガード E2E / ログインから CRUD までの E2E(Keycloak・任意) |
+| テスト | IdP なしのトークン検証(テスト用署名鍵) |
 
 # 🔀 ベースとの差分
 
@@ -32,11 +32,6 @@ podman run --rm -p 8180:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRA
 - 管理コンソール: http://localhost:8180 (admin / admin)
 
 IdP を変更する場合は、`wwwroot/appsettings.json`(Oidc セクション)、Backend の `Auth` 設定、`index.html` の preconnect 先、ロールクレームのマッピング(`KeycloakClaims` / `KeycloakClaimsPrincipalFactory`)を差し替える。
-
-# 🧪 テスト
-
-- UnitTests / IntegrationTests: IdP 不要(統合テストはテスト用署名鍵でトークンを検証)
-- E2ETests: 認証ガードのテストは IdP 不要。ログイン〜CRUD 一巡(`DataCrudTests`)は上記 Keycloak を起動し、環境変数 `E2E_OIDC=1` を設定したときのみ実行される
 
 # 🔗 関連プロジェクト
 
