@@ -21,10 +21,10 @@ English | [日本語](README.ja.md)
 
 # 🔐 IdP for development (Keycloak)
 
-Start it with Podman (the realm `template` is imported automatically on the first start).
+Start it with WSLc (`wslc`) (the realm `template` is imported automatically on the first start).
 
 ```
-podman run --rm -p 8180:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin -v .\keycloak:/opt/keycloak/data/import quay.io/keycloak/keycloak:26.4 start-dev --import-realm
+wslc run --rm -p 8180:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin -v .\keycloak:/opt/keycloak/data/import quay.io/keycloak/keycloak:26.4 start-dev --import-realm
 ```
 
 - Realm: `template` / client: `template-blazor-wasm` (public, PKCE S256, redirect URI `http://localhost:8080/*`)
